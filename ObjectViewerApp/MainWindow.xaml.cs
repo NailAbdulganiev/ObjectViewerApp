@@ -37,7 +37,7 @@ namespace ObjectViewerApp
                 if (System.IO.Path.GetExtension(filePath).ToLower() == ".csv")
                 {
                     ImportCsv(filePath);
-                } 
+                }
                 else
                 {
                     ImportExcel(filePath);
@@ -60,7 +60,7 @@ namespace ObjectViewerApp
                         double width = Convert.ToDouble(worksheet.Cells[row, 4].Text);
                         double height = Convert.ToDouble(worksheet.Cells[row, 5].Text);
 
-                        if (x < 0 || x > 20 || y < 0 || y > 12 || width < 0 || width > 20 || height < 0 || height > 12)
+                        if (x < 0 || x > 40 || y < 0 || y > 24 || width < 0 || width > 40 || height < 0 || height > 24)
                         {
                             MessageBox.Show($"Ошибка в файле Excel: Один из параметров выходит за допустимый диапазон. Строка: {row}",
                                 "Ошибка данных", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -76,12 +76,11 @@ namespace ObjectViewerApp
                             Height = height,
                             IsDefect = worksheet.Cells[row, 6].Text.ToLower() == "yes"
                         });
-                    } 
+                    }
                     catch (Exception ex)
                     {
                         MessageBox.Show($"Ошибка в файле Excel: {ex.Message}", "Ошибка данных", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                    
                 }
             }
         }
@@ -101,7 +100,7 @@ namespace ObjectViewerApp
                         double width = Convert.ToDouble(parts[3]);
                         double height = Convert.ToDouble(parts[4]);
 
-                        if (x < 0 || x > 20 || y < 0 || y > 12 || width < 0 || width > 20 || height < 0 || height > 12)
+                        if (x < 0 || x > 40 || y < 0 || y > 24 || width < 0 || width > 40 || height < 0 || height > 24)
                         {
                             MessageBox.Show($"Ошибка в файле CSV: Один из параметров выходит за допустимый диапазон. Строка: {line}",
                                 "Ошибка данных", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -117,16 +116,16 @@ namespace ObjectViewerApp
                             Height = height,
                             IsDefect = parts[5].ToLower() == "yes"
                         });
-                    } 
+                    }
                     catch (Exception ex)
                     {
                         MessageBox.Show($"Ошибки в файле CSV: {ex.Message}", "Ошибка данных", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }  
+                    }
                 }
             }
         }
 
-        private void DataGridObjects_SelectionChanged(object sender, SelectionChangedEventArgs e) 
+        private void DataGridObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DataGridObjects.SelectedItem is ObjectData selectedObject)
             {
@@ -136,6 +135,7 @@ namespace ObjectViewerApp
                 DrawObjectOnCanvas(selectedObject);
             }
         }
+
         private void CanvasDisplay_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             CoordinateCanvas.Children.Clear();
@@ -175,9 +175,9 @@ namespace ObjectViewerApp
             CoordinateCanvas.Children.Add(yAxis);
 
             // Метки на оси X
-            for (int i = 0; i <= 20; i++)
+            for (int i = 0; i <= 40; i++)
             {
-                double xPosition = i * canvasWidth / 20;
+                double xPosition = i * canvasWidth / 40;
 
                 var tick = new Line
                 {
@@ -201,9 +201,9 @@ namespace ObjectViewerApp
             }
 
             // Метки на оси Y
-            for (int i = 0; i <= 12; i++)
+            for (int i = 0; i <= 24; i++)
             {
-                double yPosition = canvasHeight - (i * canvasHeight / 12);
+                double yPosition = canvasHeight - (i * canvasHeight / 24);
 
                 var tick = new Line
                 {
@@ -233,22 +233,22 @@ namespace ObjectViewerApp
             double canvasWidth = ObjectCanvas.ActualWidth;
             double canvasHeight = ObjectCanvas.ActualHeight;
 
-            double scaleX = canvasWidth / 20;
-            double scaleY = canvasHeight / 12;
-            if (selectedObject.X + selectedObject.Width > 20)
+            double scaleX = canvasWidth / 40;
+            double scaleY = canvasHeight / 24;
+            if (selectedObject.X + selectedObject.Width > 40)
             {
                 MessageBox.Show($"Ошибка в значениях продукта '{selectedObject.Name}'. " +
                     $"Отрисовка данного объекта выйдет за пределы координатной плоскости по оси X.",
                             "Ошибка данных", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else if (selectedObject.Y + selectedObject.Height > 12)
+            else if (selectedObject.Y + selectedObject.Height > 24)
             {
                 MessageBox.Show($"Ошибка в значениях продукта '{selectedObject.Name}'. " +
                    $"Отрисовка данного объекта выйдет за пределы координатной плоскости по оси Y.",
                            "Ошибка данных", MessageBoxButton.OK, MessageBoxImage.Error);
-            } 
-            else 
-            { 
+            }
+            else
+            {
                 var rect = new Rectangle
                 {
                     Width = selectedObject.Width * scaleX,
@@ -263,7 +263,6 @@ namespace ObjectViewerApp
                 ObjectCanvas.Children.Add(rect);
             }
         }
-
 
         public class ObjectData
         {
